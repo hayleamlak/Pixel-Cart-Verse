@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
       if (exist) {
         return prev.map((item) =>
           item._id === product._id
-            ? { ...item, qty: item.qty + qty }
+            ? { ...item, qty: Math.max(1, item.qty + qty) } // ensure qty >= 1
             : item
         );
       } else {
@@ -49,8 +49,6 @@ export const CartProvider = ({ children }) => {
 // ✅ Custom hook
 export const useCart = () => {
   const context = useContext(CartContext);
-  if (!context) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
+  if (!context) throw new Error("useCart must be used within a CartProvider");
   return context;
 };

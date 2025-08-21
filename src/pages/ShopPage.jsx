@@ -11,59 +11,63 @@ const ShopPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(20); // Number of products per page
+  const [visibleCount, setVisibleCount] = useState(20); // Number of products initially visible
   const navigate = useNavigate();
 
-  const usdToEtbRate = 55; // Adjust exchange rate if needed
+  const usdToEtbRate = 55;
 
-  // Fetch products from backend
+  // Fetch products with localStorage caching
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
       try {
-        const res = await fetch("http://localhost:5000/api/products");
-        const data = await res.json();
+        const cached = localStorage.getItem("products");
+        if (cached) {
+          const data = JSON.parse(cached);
+          setProducts(data);
+          setFilteredProducts(data);
+          const cats = ["All", ...new Set(data.map((p) => p.category))];
+          setCategories(cats);
+          setLoading(false);
+          return;
+        }
 
+        const res = await fetch("http://localhost:5000/api/products");
+        if (!res.ok) throw new Error("Failed to fetch products");
+
+        const data = await res.json();
         setProducts(data);
         setFilteredProducts(data);
-
+        localStorage.setItem("products", JSON.stringify(data));
         const cats = ["All", ...new Set(data.map((p) => p.category))];
         setCategories(cats);
         setLoading(false);
       } catch (err) {
-        setError("Failed to fetch products");
+        console.error(err);
+        setError(err.message || "Failed to fetch products");
         setLoading(false);
       }
     };
+
     fetchProducts();
   }, []);
 
   // Filter by category
   useEffect(() => {
-    setCurrentPage(1); // Reset page when filter changes
+    setVisibleCount(20); // Reset visible count
     if (selectedCategory === "All") setFilteredProducts(products);
-    else
-      setFilteredProducts(
-        products.filter((p) => p.category === selectedCategory)
-      );
+    else setFilteredProducts(products.filter((p) => p.category === selectedCategory));
   }, [selectedCategory, products]);
 
   // Calculate average rating
   const getAverageRating = (reviews) => {
     if (!reviews || reviews.length === 0) return 0;
-    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
-    return sum / reviews.length;
+    return reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
   };
 
-  // Pagination logic
-  const indexOfLast = currentPage * productsPerPage;
-  const indexOfFirst = indexOfLast - productsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-
-  const handlePageChange = (pageNum) => {
-    setCurrentPage(pageNum);
-    window.scrollTo(0, 0);
+  // Load more products
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 20);
   };
 
   if (loading) return <p className="loading">Loading...</p>;
@@ -88,60 +92,41 @@ const ShopPage = () => {
 
       {/* Products Grid */}
       <div className="products-grid">
-        {currentProducts.map((product) => {
+        {filteredProducts.slice(0, visibleCount).map((product) => {
           const discountedPrice = product.discountPercentage
-            ? (
-                product.price - 
-                (product.price * product.discountPercentage) / 100
-              ).toFixed(2)
+            ? (product.price - (product.price * product.discountPercentage) / 100).toFixed(2)
             : product.price;
 
           const inStock = product.stock > 0;
           const avgRating = getAverageRating(product.reviews);
           const roundedRating = Math.round(avgRating);
-
-          // Convert USD to ETB
           const priceETB = (product.price * usdToEtbRate).toLocaleString();
           const discountedETB = (discountedPrice * usdToEtbRate).toLocaleString();
 
           return (
             <div key={product._id} className="product-card">
-              {/* Wishlist Icon */}
-              <span className="wishlist-icon">❤</span>
-
-              {/* Discount badge */}
               {product.discountPercentage > 0 && (
                 <span className="badge discount">-{product.discountPercentage}%</span>
               )}
-
-              {/* Product Image */}
               <img
                 src={product.images?.[0] || product.thumbnail || product.image}
                 alt={product.name}
                 className="product-image"
                 onClick={() => navigate(`/product/${product._id}`)}
               />
-
-              {/* Name */}
               <h2
                 className="product-name"
                 onClick={() => navigate(`/product/${product._id}`)}
               >
                 {product.name}
               </h2>
-
-              {/* Description */}
               <p className="product-description">{product.description?.substring(0, 60)}...</p>
-
-              {/* Top info: category & stock */}
               <div className="top-info">
                 <span className="product-category">{product.category}</span>
                 <span className={`stock ${inStock ? "in-stock" : "out-stock"}`}>
                   {inStock ? "In Stock" : "Out of Stock"}
                 </span>
               </div>
-
-              {/* Price */}
               <div className="price">
                 {product.discountPercentage > 0 ? (
                   <>
@@ -152,18 +137,24 @@ const ShopPage = () => {
                   <span className="normal-price">{priceETB} ETB</span>
                 )}
               </div>
-
-              {/* Rating */}
               <div className="product-rating">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={i < roundedRating ? "star filled" : "star"}>★</span>
+                  <span key={i} className={i < roundedRating ? "star filled" : "star"}>
+                    ★
+                  </span>
                 ))}
                 <span className="rating-number">({avgRating.toFixed(1)})</span>
               </div>
-
-              {/* Add to Cart */}
               <button
-                onClick={() => addToCart(product)}
+                onClick={() =>
+                  addToCart({
+                    _id: product._id,
+                    name: product.name,
+                    price: Number(discountedPrice) * usdToEtbRate,
+                    image: product.images?.[0] || product.thumbnail || product.image,
+                    description: product.description,
+                  })
+                }
                 disabled={!inStock}
                 className={`cart-btn ${!inStock ? "disabled" : ""}`}
               >
@@ -174,18 +165,12 @@ const ShopPage = () => {
         })}
       </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="pagination">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i + 1}
-              className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
-              onClick={() => handlePageChange(i + 1)}
-            >
-              {i + 1}
-            </button>
-          ))}
+      {/* Load More Button */}
+      {visibleCount < filteredProducts.length && (
+        <div className="load-more-container">
+          <button className="load-more-btn" onClick={handleLoadMore}>
+            Load More
+          </button>
         </div>
       )}
     </div>

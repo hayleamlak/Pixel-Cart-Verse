@@ -53,7 +53,7 @@ function CartPage() {
                   >
                     {item.name}
                   </h2>
-                  <p>{item.description.slice(0, 60)}...</p>
+                  <p>{item.description?.slice(0, 60)}...</p>
 
                   {/* Price with discount */}
                   {item.discount ? (

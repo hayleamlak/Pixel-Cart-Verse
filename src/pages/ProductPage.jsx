@@ -4,7 +4,7 @@ import { CartContext } from "../context/cartContext";
 import { FaStar, FaRegStar, FaStarHalfAlt, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import "../styles/ProductPage.css";
 
-const ETB_RATE = 55; // Example conversion rate: 1 USD = 55 ETB
+const ETB_RATE = 55;
 
 function ProductPage() {
   const { id } = useParams();
@@ -16,7 +16,7 @@ function ProductPage() {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("description"); // tabs: description, specs, reviews
+  const [activeTab, setActiveTab] = useState("description");
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -35,7 +35,19 @@ function ProductPage() {
   }, [id]);
 
   const handleAddToCart = () => {
-    if (product) addToCart({ ...product, quantity });
+    if (!product) return;
+    addToCart(
+      {
+        _id: product._id,
+        name: product.name,
+        price: product.discountPercentage
+          ? product.price - (product.price * product.discountPercentage) / 100
+          : product.price,
+        image: product.images?.[0] || product.image || product.thumbnail,
+        description: product.description,
+      },
+      quantity // pass the selected quantity
+    );
   };
 
   const renderStars = (rating) => {
@@ -46,18 +58,6 @@ function ProductPage() {
       else stars.push(<FaRegStar key={i} color="#FFD700" />);
     }
     return stars;
-  };
-
-  const handlePrevImage = () => {
-    if (product?.images?.length) {
-      setSelectedImageIndex((prev) => (prev === 0 ? product.images.length - 1 : prev - 1));
-    }
-  };
-
-  const handleNextImage = () => {
-    if (product?.images?.length) {
-      setSelectedImageIndex((prev) => (prev === product.images.length - 1 ? 0 : prev + 1));
-    }
   };
 
   if (loading) return <h2>Loading product...</h2>;
@@ -73,6 +73,18 @@ function ProductPage() {
     product.reviews?.length > 0
       ? product.reviews.reduce((a, r) => a + r.rating, 0) / product.reviews.length
       : 0;
+
+  const handlePrevImage = () => {
+    if (product?.images?.length) {
+      setSelectedImageIndex((prev) => (prev === 0 ? product.images.length - 1 : prev - 1));
+    }
+  };
+
+  const handleNextImage = () => {
+    if (product?.images?.length) {
+      setSelectedImageIndex((prev) => (prev === product.images.length - 1 ? 0 : prev + 1));
+    }
+  };
 
   return (
     <div className="product-page-container">
@@ -100,10 +112,9 @@ function ProductPage() {
         </div>
       </div>
 
-      {/* Right: Product Info */}
+      {/* Right: Info */}
       <div className="product-info">
         <h1>{product.name}</h1>
-
         <div className="rating-stock">
           <span className="rating">{renderStars(avgRating)}</span>
           <span className="stock">{product.stock > 0 ? "In Stock" : "Out of Stock"}</span>
@@ -119,7 +130,7 @@ function ProductPage() {
           )}
         </div>
 
-        {/* Quantity */}
+        {/* Quantity selector */}
         <div className="quantity-selector">
           <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>-</button>
           <span>{quantity}</span>
@@ -128,7 +139,13 @@ function ProductPage() {
 
         {/* Action Buttons */}
         <div className="action-buttons">
-          <button className="add-to-cart-btn" onClick={handleAddToCart}>Add to Cart</button>
+          <button
+            className="add-to-cart-btn"
+            onClick={handleAddToCart}
+            disabled={product.stock <= 0}
+          >
+            Add to Cart
+          </button>
           <button className="buy-now-btn" onClick={() => alert("Buy now")}>Buy Now</button>
           <button className="wishlist-btn">❤️ Wishlist</button>
         </div>
