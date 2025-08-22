@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import "../styles/AuthPages.css";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -12,42 +14,55 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     try {
       await register(name, email, password);
-      navigate("/"); // redirect after register
+      navigate("/"); // redirect to Home after registration
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Registration failed");
     }
   };
 
   return (
-    <div className="auth-container">
-      <h2>Register</h2>
+    <div className="auth-container register-page">
+      <h2>Create an Account</h2>
       {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Register</button>
+        <div className="input-group">
+          <FaUser className="input-icon" />
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="input-group">
+          <FaEnvelope className="input-icon" />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="input-group">
+          <FaLock className="input-icon" />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" className="auth-btn">Register</button>
       </form>
+      <p className="switch-page">
+        Already have an account? <Link to="/login">Login here</Link>
+      </p>
     </div>
   );
 };

@@ -1,0 +1,102 @@
+.auth-container {
+  max-width: 400px;
+  width: 90%;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box; /* ensures padding doesn't break width */
+}
+
+.auth-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 0.75rem; /* space for icon on right */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box; /* fix overflow */
+  transition: all 0.2s;
+}
+
+.input-group input:focus {
+  border-color: #ff6347;
+  outline: none;
+}
+
+.input-icon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  pointer-events: none; /* click passes through icon */
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #ff6347;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+
+.auth-btn:hover {
+  background-color: #e5533c;
+}
+
+.error {
+  color: #ff4d4f;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.switch-page {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.switch-page a {
+  color: #ff6347;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.switch-page a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive for small devices */
+@media (max-width: 450px) {
+  .auth-container {
+    padding: 1.5rem;
+  }
+
+  .input-group input {
+    font-size: 0.95rem;
+  }
+
+  .auth-btn {
+    padding: 0.65rem;
+  }
+}

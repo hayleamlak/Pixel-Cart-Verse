@@ -11,12 +11,11 @@ const ShopPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [visibleCount, setVisibleCount] = useState(20); // Number of products initially visible
+  const [visibleCount, setVisibleCount] = useState(20);
   const navigate = useNavigate();
 
-  const usdToEtbRate = 55;
+  const ETB_RATE = 55;
 
-  // Fetch products with localStorage caching
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -26,8 +25,7 @@ const ShopPage = () => {
           const data = JSON.parse(cached);
           setProducts(data);
           setFilteredProducts(data);
-          const cats = ["All", ...new Set(data.map((p) => p.category))];
-          setCategories(cats);
+          setCategories(["All", ...new Set(data.map((p) => p.category))]);
           setLoading(false);
           return;
         }
@@ -39,11 +37,9 @@ const ShopPage = () => {
         setProducts(data);
         setFilteredProducts(data);
         localStorage.setItem("products", JSON.stringify(data));
-        const cats = ["All", ...new Set(data.map((p) => p.category))];
-        setCategories(cats);
+        setCategories(["All", ...new Set(data.map((p) => p.category))]);
         setLoading(false);
       } catch (err) {
-        console.error(err);
         setError(err.message || "Failed to fetch products");
         setLoading(false);
       }
@@ -52,23 +48,18 @@ const ShopPage = () => {
     fetchProducts();
   }, []);
 
-  // Filter by category
   useEffect(() => {
-    setVisibleCount(20); // Reset visible count
+    setVisibleCount(20);
     if (selectedCategory === "All") setFilteredProducts(products);
     else setFilteredProducts(products.filter((p) => p.category === selectedCategory));
   }, [selectedCategory, products]);
 
-  // Calculate average rating
   const getAverageRating = (reviews) => {
     if (!reviews || reviews.length === 0) return 0;
     return reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
   };
 
-  // Load more products
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + 20);
-  };
+  const handleLoadMore = () => setVisibleCount((prev) => prev + 20);
 
   if (loading) return <p className="loading">Loading...</p>;
   if (error) return <p className="error">{error}</p>;
@@ -93,15 +84,17 @@ const ShopPage = () => {
       {/* Products Grid */}
       <div className="products-grid">
         {filteredProducts.slice(0, visibleCount).map((product) => {
-          const discountedPrice = product.discountPercentage
-            ? (product.price - (product.price * product.discountPercentage) / 100).toFixed(2)
-            : product.price;
+          const discountedPrice =
+            product.discountPercentage > 0
+              ? product.price - (product.price * product.discountPercentage) / 100
+              : product.price;
 
           const inStock = product.stock > 0;
           const avgRating = getAverageRating(product.reviews);
           const roundedRating = Math.round(avgRating);
-          const priceETB = (product.price * usdToEtbRate).toLocaleString();
-          const discountedETB = (discountedPrice * usdToEtbRate).toLocaleString();
+
+          const priceETB = (product.price * ETB_RATE).toLocaleString();
+          const discountedETB = (discountedPrice * ETB_RATE).toLocaleString();
 
           return (
             <div key={product._id} className="product-card">
@@ -150,7 +143,7 @@ const ShopPage = () => {
                   addToCart({
                     _id: product._id,
                     name: product.name,
-                    price: Number(discountedPrice) * usdToEtbRate,
+                    price: discountedPrice * ETB_RATE,
                     image: product.images?.[0] || product.thumbnail || product.image,
                     description: product.description,
                   })
@@ -165,7 +158,6 @@ const ShopPage = () => {
         })}
       </div>
 
-      {/* Load More Button */}
       {visibleCount < filteredProducts.length && (
         <div className="load-more-container">
           <button className="load-more-btn" onClick={handleLoadMore}>

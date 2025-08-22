@@ -1,7 +1,6 @@
 // src/context/authContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-// Create context
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -39,12 +38,43 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  const logout = () => {
-    setUser(null);
+  const logout = () => setUser(null);
+
+  const isLoggedIn = !!user;
+
+  // ✅ Fetch profile from backend
+  const fetchProfile = async () => {
+    if (!user) return;
+    const res = await fetch("http://localhost:5000/api/users/profile", {
+      headers: { Authorization: `Bearer ${user.token}` },
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Failed to fetch profile");
+    setUser(data);
+    return data;
+  };
+
+  // ✅ Update profile on backend
+  const updateProfile = async (updateData) => {
+    if (!user) throw new Error("Not logged in");
+    const res = await fetch("http://localhost:5000/api/users/profile", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify(updateData),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Failed to update profile");
+    setUser(data);
+    return data;
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, isLoggedIn, login, register, logout, fetchProfile, updateProfile }}
+    >
       {children}
     </AuthContext.Provider>
   );

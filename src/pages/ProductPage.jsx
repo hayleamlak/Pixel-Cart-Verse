@@ -34,20 +34,33 @@ function ProductPage() {
     fetchProduct();
   }, [id]);
 
+  // Add to cart (price in ETB)
   const handleAddToCart = () => {
     if (!product) return;
+
+    const priceETB = product.discountPercentage
+      ? (product.price - (product.price * product.discountPercentage) / 100) * ETB_RATE
+      : product.price * ETB_RATE;
+
+    const originalPriceETB = product.discountPercentage ? product.price * ETB_RATE : null;
+
     addToCart(
       {
         _id: product._id,
         name: product.name,
-        price: product.discountPercentage
-          ? product.price - (product.price * product.discountPercentage) / 100
-          : product.price,
+        price: priceETB,
+        originalPrice: originalPriceETB,
         image: product.images?.[0] || product.image || product.thumbnail,
         description: product.description,
       },
-      quantity // pass the selected quantity
+      quantity
     );
+  };
+
+  // Buy now: add to cart and go to checkout
+  const handleBuyNow = () => {
+    handleAddToCart();
+    navigate("/checkout");
   };
 
   const renderStars = (rating) => {
@@ -146,7 +159,9 @@ function ProductPage() {
           >
             Add to Cart
           </button>
-          <button className="buy-now-btn" onClick={() => alert("Buy now")}>Buy Now</button>
+          <button className="buy-now-btn" onClick={handleBuyNow} disabled={product.stock <= 0}>
+            Buy Now
+          </button>
           <button className="wishlist-btn">❤️ Wishlist</button>
         </div>
 

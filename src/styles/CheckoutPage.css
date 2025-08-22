@@ -1,0 +1,80 @@
+/* src/styles/CheckoutPage.css */
+
+/* ================= Container ================= */
+.checkout-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ================= Heading ================= */
+.checkout-container h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* ================= Form ================= */
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ================= Inputs & Select ================= */
+.checkout-form input,
+.checkout-form select {
+  padding: 0.8rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.checkout-form input:focus,
+.checkout-form select:focus {
+  border-color: #ff6347;
+  box-shadow: 0 0 5px rgba(255,99,71,0.4);
+}
+
+.checkout-form select {
+  cursor: pointer;
+  background-color: #fff;
+}
+
+/* ================= Button ================= */
+.checkout-form button {
+  padding: 0.8rem 1rem;
+  background-color: #ff6347;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.checkout-form button:hover {
+  background-color: #e5533c;
+}
+
+/* ================= Responsive ================= */
+@media (max-width: 600px) {
+  .checkout-container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .checkout-form input,
+  .checkout-form select,
+  .checkout-form button {
+    font-size: 0.95rem;
+  }
+}
