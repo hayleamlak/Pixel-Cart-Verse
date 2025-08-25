@@ -1,4 +1,3 @@
-// src/pages/CartPage.jsx
 import React from "react";
 import { useCart } from "../context/cartContext";
 import { useAuth } from "../context/authContext";
@@ -31,7 +30,21 @@ function CartPage() {
     else navigate("/login", { state: { from: "/checkout" } });
   };
 
-  if (cartItems.length === 0) return <p className="empty-cart">Your cart is empty</p>;
+  if (cartItems.length === 0)
+    return (
+      <div className="empty-cart-container">
+        <img
+          src="/images/empty.gif"
+          alt="Empty Cart"
+          className="empty-cart-gif"
+        />
+        <h2>Your Cart is Empty</h2>
+        <p>Looks like you haven’t added any items yet.</p>
+        <button className="shop-btn" onClick={() => navigate("/shop")}>
+          Go to Shop
+        </button>
+      </div>
+    );
 
   return (
     <div className="cart-container">

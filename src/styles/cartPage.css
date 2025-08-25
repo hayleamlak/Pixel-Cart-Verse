@@ -1,8 +1,7 @@
-/* CartPage.css */
-
 .cart-container {
   padding: 20px;
   font-family: Arial, sans-serif;
+  animation: fadeIn 0.8s ease-in-out; /* Fade in for non-empty cart */
 }
 
 .cart-container h1 {
@@ -27,6 +26,7 @@
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  animation: fadeIn 0.8s ease-in-out;
 }
 
 .cart-item-img {
@@ -97,6 +97,7 @@
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
   height: fit-content;
+  animation: fadeIn 0.8s ease-in-out;
 }
 
 .cart-summary h2 {
@@ -133,6 +134,7 @@
     margin-left: auto;
   }
 }
+
 /* Discount Price */
 .original-price {
   text-decoration: line-through;
@@ -175,12 +177,57 @@
   margin-top: 5px;
   font-style: italic;
 }
-.cart-summary p {
-  font-size: 16px;
-  margin: 5px 0;
-}
 
 .cart-summary hr {
   margin: 10px 0;
   border: 0.5px solid #ddd;
+}
+
+/* Empty cart UI */
+.empty-cart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 100px; /* pushes below navbar */
+  text-align: center;
+  color: #555;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.empty-cart-container h2 {
+  font-size: 28px;
+  margin: 15px 0;
+  color: #ff5722;
+}
+
+.empty-cart-container p {
+  font-size: 16px;
+  margin-bottom: 25px;
+}
+
+.empty-cart-gif {
+  width: 250px;
+  margin-bottom: 20px;
+}
+
+.shop-btn {
+  padding: 12px 30px;
+  background: #ff5722;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.shop-btn:hover {
+  background: #e64a19;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
