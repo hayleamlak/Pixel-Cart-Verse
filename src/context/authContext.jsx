@@ -1,87 +1,80 @@
 // src/context/authContext.jsx
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { jwtDecode } from "jwt-decode"; // ✅ fixed import
 
-const AuthContext = createContext(null);
+const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem("user");
-    return stored ? JSON.parse(stored) : null;
-  });
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    if (user) localStorage.setItem("user", JSON.stringify(user));
-    else localStorage.removeItem("user");
-  }, [user]);
-
+  // --- Email/Password Login ---
   const login = async (email, password) => {
-    const res = await fetch("http://localhost:5000/api/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Login failed");
-    setUser(data);
-    return data;
+    try {
+      const res = await fetch("http://localhost:5000/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Login failed");
+      setUser(data);
+      return data;
+    } catch (err) {
+      throw new Error(err.message || "Login failed");
+    }
   };
 
-  const register = async (name, email, password) => {
-    const res = await fetch("http://localhost:5000/api/users/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Registration failed");
-    setUser(data);
-    return data;
+  // --- Email/Password Signup ---
+  const signup = async (name, email, password) => {
+    try {
+      const res = await fetch("http://localhost:5000/api/users/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Signup failed");
+      setUser(data);
+      return data;
+    } catch (err) {
+      throw new Error(err.message || "Signup failed");
+    }
   };
 
-  const logout = () => setUser(null);
+  // --- Google Login ---
+  const googleLogin = async (credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse.credential); // ✅ fixed usage
+      const { name, email, sub: googleId } = decoded;
 
-  const isLoggedIn = !!user;
+      const res = await fetch("http://localhost:5000/api/users/google-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, googleId }),
+      });
 
-  // ✅ Fetch profile from backend
-  const fetchProfile = async () => {
-    if (!user) return;
-    const res = await fetch("http://localhost:5000/api/users/profile", {
-      headers: { Authorization: `Bearer ${user.token}` },
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Failed to fetch profile");
-    setUser(data);
-    return data;
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Google login failed");
+      setUser(data);
+      return data;
+    } catch (err) {
+      throw new Error(err.message || "Google login failed");
+    }
   };
 
-  // ✅ Update profile on backend
-  const updateProfile = async (updateData) => {
-    if (!user) throw new Error("Not logged in");
-    const res = await fetch("http://localhost:5000/api/users/profile", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-      body: JSON.stringify(updateData),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Failed to update profile");
-    setUser(data);
-    return data;
+  // --- Logout ---
+  const logout = () => {
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, isLoggedIn, login, register, logout, fetchProfile, updateProfile }}
-    >
+    <AuthContext.Provider value={{ user, login, signup, googleLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within an AuthProvider");
-  return context;
-}
+// --- Hook to use context ---
+export const useAuth = () => useContext(AuthContext);

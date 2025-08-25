@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import { GoogleLogin } from "@react-oauth/google";
 import "../styles/AuthPages.css";
 
 const RegisterPage = () => {
@@ -9,17 +10,27 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { register } = useAuth();
+  const { register, googleLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     try {
-      await register(name, email, password);
-      navigate("/"); // redirect to Home after registration
+      const data = await register(name, email, password);
+      data.isAdmin ? navigate("/admin") : navigate("/");
     } catch (err) {
       setError(err.message || "Registration failed");
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError("");
+    try {
+      const data = await googleLogin(credentialResponse);
+      data.isAdmin ? navigate("/admin") : navigate("/");
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -60,6 +71,14 @@ const RegisterPage = () => {
         </div>
         <button type="submit" className="auth-btn">Register</button>
       </form>
+
+      <div className="google-login-btn">
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={() => setError("Google login failed")}
+        />
+      </div>
+
       <p className="switch-page">
         Already have an account? <Link to="/login">Login here</Link>
       </p>
