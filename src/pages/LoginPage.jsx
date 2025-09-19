@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { GoogleLogin } from "@react-oauth/google";
-import "../styles/AuthPages.css";
+import "../styles/LoginPage.css";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -36,16 +36,16 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2 className="auth-title">Welcome Back</h2>
-        <p className="auth-subtitle">Login to access your account</p>
+    <div className="login-page">
+      <div className="login-card">
+        <h2 className="login-title">Welcome Back</h2>
+        <p className="login-subtitle">Login to access your account</p>
 
-        {error && <p className="error">{error}</p>}
+        {error && <p className="login-error">{error}</p>}
 
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <FaEnvelope className="input-icon" />
+        <form className="login-form" onSubmit={handleSubmit}>
+          <div className="login-input-group">
+            <FaEnvelope className="login-input-icon" />
             <input
               type="email"
               placeholder="Email address"
@@ -55,8 +55,8 @@ const LoginPage = () => {
             />
           </div>
 
-          <div className="input-group">
-            <FaLock className="input-icon" />
+          <div className="login-input-group">
+            <FaLock className="login-input-icon" />
             <input
               type="password"
               placeholder="Password"
@@ -66,23 +66,23 @@ const LoginPage = () => {
             />
           </div>
 
-          <button type="submit" className="auth-btn">
+          <button type="submit" className="login-btn">
             Login
           </button>
         </form>
 
-        <div className="divider">
+        <div className="login-divider">
           <span>OR</span>
         </div>
 
-        <div className="google-login-btn">
+        <div className="login-google-btn">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
             onError={() => setError("Google login failed")}
           />
         </div>
 
-        <p className="switch-page">
+        <p className="login-switch">
           Don’t have an account? <Link to="/register">Register here</Link>
         </p>
       </div>

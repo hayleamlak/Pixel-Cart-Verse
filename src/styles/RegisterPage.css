@@ -1,0 +1,162 @@
+/* === Register Page Styles === */
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #000428, #004e92);
+  font-family: "Poppins", sans-serif;
+}
+
+.register-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 40px 35px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  animation: fadeInUp 0.7s ease-out;
+}
+
+.register-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.register-subtitle {
+  font-size: 15px;
+  color: #cfd8dc;
+  margin-bottom: 24px;
+}
+
+.error-message {
+  background: rgba(255, 77, 77, 0.1);
+  color: #ff4d4d;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* === Form Styling === */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 10px rgba(0, 174, 255, 0.6);
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  color: #90caf9;
+  font-size: 18px;
+}
+
+/* === Buttons === */
+.register-btn {
+  margin-top: 8px;
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.register-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(90deg, #0072ff, #00c6ff);
+  box-shadow: 0 5px 15px rgba(0, 114, 255, 0.4);
+}
+
+/* === Divider === */
+.divider {
+  margin: 20px 0;
+  font-size: 14px;
+  color: #cfd8dc;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+/* === Google Login === */
+.google-login {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* === Switch Link === */
+.switch-link {
+  margin-top: 18px;
+  font-size: 14px;
+  color: #cfd8dc;
+}
+
+.switch-link a {
+  color: #00c6ff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.switch-link a:hover {
+  text-decoration: underline;
+}
+
+/* === Animation === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

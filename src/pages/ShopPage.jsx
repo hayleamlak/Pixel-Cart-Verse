@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../context/cartContext";
 import { useNavigate } from "react-router-dom";
+import Toast from "../components/Toast"; // Toast component
 import "../styles/shoppage.css";
+
+const ETB_RATE = 55;
 
 const ShopPage = () => {
   const { addToCart } = useCart();
@@ -12,10 +15,10 @@ const ShopPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [visibleCount, setVisibleCount] = useState(20);
+  const [toastMessage, setToastMessage] = useState("");
   const navigate = useNavigate();
 
-  const ETB_RATE = 55;
-
+  // Fetch products
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -36,18 +39,18 @@ const ShopPage = () => {
         const data = await res.json();
         setProducts(data);
         setFilteredProducts(data);
-        localStorage.setItem("products", JSON.stringify(data));
         setCategories(["All", ...new Set(data.map((p) => p.category))]);
+        localStorage.setItem("products", JSON.stringify(data));
         setLoading(false);
       } catch (err) {
         setError(err.message || "Failed to fetch products");
         setLoading(false);
       }
     };
-
     fetchProducts();
   }, []);
 
+  // Filter products by category
   useEffect(() => {
     setVisibleCount(20);
     if (selectedCategory === "All") setFilteredProducts(products);
@@ -88,7 +91,6 @@ const ShopPage = () => {
             product.discountPercentage > 0
               ? product.price - (product.price * product.discountPercentage) / 100
               : product.price;
-
           const inStock = product.stock > 0;
           const avgRating = getAverageRating(product.reviews);
           const roundedRating = Math.round(avgRating);
@@ -101,25 +103,27 @@ const ShopPage = () => {
               {product.discountPercentage > 0 && (
                 <span className="badge discount">-{product.discountPercentage}%</span>
               )}
+
               <img
                 src={product.images?.[0] || product.thumbnail || product.image}
                 alt={product.name}
                 className="product-image"
                 onClick={() => navigate(`/product/${product._id}`)}
               />
-              <h2
-                className="product-name"
-                onClick={() => navigate(`/product/${product._id}`)}
-              >
+
+              <h2 className="product-name" onClick={() => navigate(`/product/${product._id}`)}>
                 {product.name}
               </h2>
+
               <p className="product-description">{product.description?.substring(0, 60)}...</p>
+
               <div className="top-info">
                 <span className="product-category">{product.category}</span>
                 <span className={`stock ${inStock ? "in-stock" : "out-stock"}`}>
                   {inStock ? "In Stock" : "Out of Stock"}
                 </span>
               </div>
+
               <div className="price">
                 {product.discountPercentage > 0 ? (
                   <>
@@ -130,6 +134,7 @@ const ShopPage = () => {
                   <span className="normal-price">{priceETB} ETB</span>
                 )}
               </div>
+
               <div className="product-rating">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <span key={i} className={i < roundedRating ? "star filled" : "star"}>
@@ -138,16 +143,18 @@ const ShopPage = () => {
                 ))}
                 <span className="rating-number">({avgRating.toFixed(1)})</span>
               </div>
+
               <button
-                onClick={() =>
+                onClick={() => {
                   addToCart({
                     _id: product._id,
                     name: product.name,
                     price: discountedPrice * ETB_RATE,
                     image: product.images?.[0] || product.thumbnail || product.image,
                     description: product.description,
-                  })
-                }
+                  });
+                  setToastMessage(`${product.name} added to cart!`);
+                }}
                 disabled={!inStock}
                 className={`cart-btn ${!inStock ? "disabled" : ""}`}
               >
@@ -164,6 +171,14 @@ const ShopPage = () => {
             Load More
           </button>
         </div>
+      )}
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          onClose={() => setToastMessage("")}
+        />
       )}
     </div>
   );

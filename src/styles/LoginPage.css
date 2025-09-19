@@ -1,0 +1,169 @@
+/* === Login Container === */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b, #0f172a);
+  font-family: "Poppins", sans-serif;
+  padding: 20px;
+}
+
+/* === Login Card === */
+.login-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  border-radius: 22px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+  width: 100%;
+  max-width: 440px;
+  padding: 45px 35px;
+  color: #f8fafc;
+  text-align: center;
+  animation: fadeIn 0.9s ease-in-out;
+}
+
+/* === Titles === */
+.login-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.login-subtitle {
+  font-size: 1rem;
+  color: #bfdbfe;
+  margin-bottom: 28px;
+}
+
+/* === Error Message === */
+.login-error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+  font-size: 0.9rem;
+}
+
+/* === Input Groups === */
+.login-input-group {
+  position: relative;
+  margin-bottom: 22px;
+}
+
+.login-input-icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #93c5fd;
+  font-size: 1.1rem;
+}
+
+.login-input-group input {
+  width: 100%;
+  padding: 13px 14px 13px 44px;
+  border: none;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #eff6ff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.login-input-group input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 2px #3b82f6;
+}
+
+/* === Buttons === */
+.login-btn {
+  width: 100%;
+  padding: 13px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.4);
+}
+
+/* === Divider === */
+.login-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 22px 0;
+  color: #93c5fd;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #475569;
+}
+
+.login-divider span {
+  margin: 0 12px;
+  font-size: 0.9rem;
+  color: #93c5fd;
+}
+
+/* === Google Button === */
+.login-google-btn {
+  margin-bottom: 22px;
+}
+
+/* === Switch Page Link === */
+.login-switch {
+  font-size: 0.9rem;
+  color: #bfdbfe;
+}
+
+.login-switch a {
+  color: #60a5fa;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.login-switch a:hover {
+  color: #93c5fd;
+}
+
+/* === Animation === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* === Responsive === */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 35px 22px;
+  }
+
+  .login-title {
+    font-size: 1.7rem;
+  }
+}

@@ -1,4 +1,4 @@
-/* Container */ 
+/* Container */
 .shop-container {
   padding: 20px;
   max-width: 1400px;
@@ -65,14 +65,19 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 1.2rem;
-  color: #e53935;
+  font-size: 1.4rem;
+  color: #888;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .wishlist-icon:hover {
   transform: scale(1.2);
+  color: #e53935;
+}
+
+.wishlist-icon.active {
+  color: #e53935;
 }
 
 /* Top info row: category + stock */
@@ -233,7 +238,7 @@
   margin-top: 50px;
 }
 
-/* Responsive: reduce columns on smaller screens */
+/* Responsive */
 @media (max-width: 1400px) {
   .products-grid {
     grid-template-columns: repeat(4, 1fr);
