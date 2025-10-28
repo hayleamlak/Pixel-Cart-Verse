@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useCart } from "../context/cartContext";
 import { useAuth } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ function CartPage() {
   const { cartItems, removeFromCart, addToCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [showAlert, setShowAlert] = useState(false);
 
   // Prices are already in ETB
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
@@ -26,8 +27,11 @@ function CartPage() {
   };
 
   const handleCheckout = () => {
-    if (user) navigate("/checkout");
-    else navigate("/login", { state: { from: "/checkout" } });
+    if (user) {
+      navigate("/checkout");
+    } else {
+      setShowAlert(true);
+    }
   };
 
   if (cartItems.length === 0)
@@ -111,6 +115,30 @@ function CartPage() {
           <button className="checkout-btn" onClick={handleCheckout}>Proceed to Checkout</button>
         </div>
       </div>
+
+      {/* Alert Modal */}
+      {showAlert && (
+        <div className="cart-alert-overlay">
+          <div className="cart-alert-modal">
+            <h2>⚠️ Attention</h2>
+            <p>Please sign up or login first to proceed to checkout.</p>
+            <div className="cart-alert-actions">
+              <button
+                className="cart-alert-btn primary"
+                onClick={() => navigate("/register")}
+              >
+                Sign Up
+              </button>
+              <button
+                className="cart-alert-btn secondary"
+                onClick={() => setShowAlert(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

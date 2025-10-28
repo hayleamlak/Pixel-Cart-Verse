@@ -8,7 +8,7 @@ import "../styles/CheckoutPage.css";
 
 const CheckoutPage = () => {
   const { cartItems, clearCart } = useCart();
-  const { user, isLoggedIn } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [shipping, setShipping] = useState({
@@ -26,20 +26,27 @@ const CheckoutPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isLoggedIn || !user?.token) {
-      alert("You must log in first!");
-      navigate("/login");
+
+    if (!user || !user.token) {
+      const alertDiv = document.createElement("div");
+      alertDiv.className = "checkout-alert";
+      alertDiv.innerText = "⚠️ You must log in first to place an order!";
+      document.body.appendChild(alertDiv);
+
+      setTimeout(() => {
+        alertDiv.remove();
+        navigate("/login", { state: { from: "/checkout" } });
+      }, 3000);
+
       return;
     }
+
     if (!cartItems.length) {
       alert("Your cart is empty!");
       return;
     }
 
-    const itemsPrice = cartItems.reduce(
-      (sum, item) => sum + item.price * (item.qty || 1),
-      0
-    );
+    const itemsPrice = cartItems.reduce((sum, item) => sum + item.price * (item.qty || 1), 0);
     const shippingPrice = itemsPrice * 0.05;
     const tax = itemsPrice * 0.15;
     const totalPrice = itemsPrice + shippingPrice + tax;
@@ -68,7 +75,9 @@ const CheckoutPage = () => {
         },
         body: JSON.stringify(orderData),
       });
+
       const data = await res.json();
+
       if (res.ok) {
         if (typeof clearCart === "function") clearCart();
         if (paymentMethod === "Chapa") navigate(`/payment/chapa/${data._id}`);
@@ -91,7 +100,7 @@ const CheckoutPage = () => {
     <div className="checkout-container">
       <h2>Checkout</h2>
       <div className="checkout-grid">
-        {/* Left Column: Vibrant Order Summary */}
+        {/* Left Column: Order Summary */}
         <div className="cart-summary">
           <h3>Order Summary</h3>
           {cartItems.length === 0 ? <p>Your cart is empty</p> : (
@@ -124,12 +133,14 @@ const CheckoutPage = () => {
           <input name="city" placeholder="City" value={shipping.city} onChange={handleChange} required />
           <input name="postalCode" placeholder="Postal Code" value={shipping.postalCode} onChange={handleChange} required />
           <input name="country" placeholder="Country" value={shipping.country} onChange={handleChange} required />
+
           <h3>Payment Method</h3>
           <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
             <option value="Chapa">Chapa</option>
             <option value="Telebirr">Telebirr</option>
             <option value="Cash">Cash on Delivery</option>
           </select>
+
           <button type="submit" className="place-order-btn">Place Order</button>
         </form>
       </div>

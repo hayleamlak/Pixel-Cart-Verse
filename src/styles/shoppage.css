@@ -262,3 +262,34 @@
     grid-template-columns: 1fr;
   }
 }
+/* Container to center the button */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0; /* space above and below */
+}
+
+/* Load More button style */
+.load-more-btn {
+  background: linear-gradient(135deg, #ff4b2b, #ff6f61); /* modern gradient */
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.load-more-btn:hover {
+  background: linear-gradient(135deg, #ff2e63, #ff4b2b);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.load-more-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}

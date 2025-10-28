@@ -231,3 +231,88 @@
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* ===========================
+   Cart Page Alert Modal
+=========================== */
+
+/* Overlay behind the modal */
+.cart-alert-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Box */
+.cart-alert-modal {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 14px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  animation: slideDown 0.3s ease-out;
+}
+
+/* Alert Title */
+.cart-alert-modal h2 {
+  margin-bottom: 0.8rem;
+  color: #ff4c4c; /* Warning red */
+  font-size: 1.5rem;
+}
+
+/* Alert Message */
+.cart-alert-modal p {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1rem;
+}
+
+/* Buttons Container */
+.cart-alert-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Alert Buttons */
+.cart-alert-btn {
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.cart-alert-btn.primary {
+  background: #007bff;
+  color: #fff;
+}
+
+.cart-alert-btn.primary:hover {
+  background: #0056b3;
+}
+
+.cart-alert-btn.secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.cart-alert-btn.secondary:hover {
+  background: #c0c0c0;
+}
+
+/* Animation */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
