@@ -13,6 +13,7 @@ import Navbar from "./components/Navbar";
 // Import payment pages
 import ChapaPayment from "./components/payment/ChapaPayment";
 import TelebirrPayment from "./components/payment/TelebirrPayment";
+import PaymentSuccess from "./pages/paymentsuccess"; // add this import
 
 function App() {
   return (
@@ -28,9 +29,13 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/admin" element={<AdminPage />} />
+        
         {/* Payment routes */}
         <Route path="/payment/chapa/:orderId" element={<ChapaPayment />} />
         <Route path="/payment/telebirr/:orderId" element={<TelebirrPayment />} />
+
+        {/* Chapa redirect success route */}
+        <Route path="/paymentsuccess" element={<PaymentSuccess />} />
       </Routes>
     </Router>
   );

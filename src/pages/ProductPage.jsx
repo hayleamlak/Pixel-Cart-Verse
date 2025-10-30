@@ -5,11 +5,10 @@ import { FaStar, FaRegStar, FaStarHalfAlt, FaArrowLeft, FaArrowRight } from "rea
 import "../styles/ProductPage.css";
 import Toast from "../components/Toast";
 
-
 const ETB_RATE = 55;
 
 function ProductPage() {
-  const { id } = useParams();
+  const { id } = useParams(); // MongoDB _id from URL
   const { addToCart } = useContext(CartContext);
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
@@ -19,7 +18,6 @@ function ProductPage() {
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("description");
   const [toastMessage, setToastMessage] = useState("");
-
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -64,20 +62,19 @@ function ProductPage() {
     return stars;
   };
 
-const handleAddToCart = () => {
-  addToCart(
-    {
-      _id: product._id,
-      name: product.name,
-      price: discountedPrice * ETB_RATE,
-      image: product.images?.[0] || product.thumbnail || product.image,
-      description: product.description,
-    },
-    quantity
-  );
-  setToastMessage(`${product.name} added to cart!`);
-};
-
+  const handleAddToCart = () => {
+    addToCart(
+      {
+        _id: product._id,
+        name: product.name,
+        price: discountedPrice * ETB_RATE,
+        image: product.images?.[0] || product.thumbnail || product.image,
+        description: product.description,
+      },
+      quantity
+    );
+    setToastMessage(`${product.name} added to cart!`);
+  };
 
   const handleBuyNow = () => {
     handleAddToCart();
@@ -85,11 +82,13 @@ const handleAddToCart = () => {
   };
 
   const handlePrevImage = () => {
-    if (product?.images?.length) setSelectedImageIndex(prev => (prev === 0 ? product.images.length - 1 : prev - 1));
+    if (product?.images?.length)
+      setSelectedImageIndex((prev) => (prev === 0 ? product.images.length - 1 : prev - 1));
   };
 
   const handleNextImage = () => {
-    if (product?.images?.length) setSelectedImageIndex(prev => (prev === product.images.length - 1 ? 0 : prev + 1));
+    if (product?.images?.length)
+      setSelectedImageIndex((prev) => (prev === product.images.length - 1 ? 0 : prev + 1));
   };
 
   return (
@@ -97,12 +96,22 @@ const handleAddToCart = () => {
       <div className="product-gallery">
         <div className="gallery-main">
           <button className="arrow left" onClick={handlePrevImage}><FaArrowLeft /></button>
-          <img src={product.images?.[selectedImageIndex] || product.thumbnail} alt={product.name} className="main-image" />
+          <img
+            src={product.images?.[selectedImageIndex] || product.thumbnail || product.image}
+            alt={product.name}
+            className="main-image"
+          />
           <button className="arrow right" onClick={handleNextImage}><FaArrowRight /></button>
         </div>
         <div className="gallery-thumbnails">
           {[product.images?.[0], ...(product.images || [])].map((img, idx) => (
-            <img key={idx} src={img} className={selectedImageIndex === idx ? "active" : ""} onClick={() => setSelectedImageIndex(idx)} />
+            <img
+              key={idx}
+              src={img}
+              className={selectedImageIndex === idx ? "active" : ""}
+              onClick={() => setSelectedImageIndex(idx)}
+              alt={`Thumbnail ${idx + 1}`}
+            />
           ))}
         </div>
       </div>
@@ -120,9 +129,9 @@ const handleAddToCart = () => {
         </div>
 
         <div className="quantity-selector">
-          <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>-</button>
+          <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>-</button>
           <span>{quantity}</span>
-          <button onClick={() => setQuantity(q => q + 1)}>+</button>
+          <button onClick={() => setQuantity((q) => q + 1)}>+</button>
         </div>
 
         <div className="action-buttons">
@@ -133,7 +142,9 @@ const handleAddToCart = () => {
         <div className="tabs">
           <button className={activeTab === "description" ? "active" : ""} onClick={() => setActiveTab("description")}>Description</button>
           <button className={activeTab === "specs" ? "active" : ""} onClick={() => setActiveTab("specs")}>Specifications</button>
-          <button className={activeTab === "reviews" ? "active" : ""} onClick={() => setActiveTab("reviews")}>Reviews ({product.reviews?.length || 0})</button>
+          <button className={activeTab === "reviews" ? "active" : ""} onClick={() => setActiveTab("reviews")}>
+            Reviews ({product.reviews?.length || 0})
+          </button>
         </div>
 
         <div className="tab-content">
@@ -157,9 +168,7 @@ const handleAddToCart = () => {
         </div>
       </div>
 
-{ toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage("")} /> }
-
-
+      {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage("")} />}
     </div>
   );
 }
