@@ -14,20 +14,26 @@ function ProfilePage() {
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [message, setMessage] = useState("");
 
+  // Fill form with current user info
   useEffect(() => {
     if (user) {
       setFormData({ name: user.name, email: user.email, password: "" });
     }
   }, [user]);
 
+  // Fetch user orders
   useEffect(() => {
     const fetchOrders = async () => {
-      if (!user?._id) return;
+      if (!user?.token) return;
       setLoadingOrders(true);
       try {
-        const res = await fetch(`http://localhost:5000/api/orders/user/${user._id}`);
-        if (!res.ok) throw new Error("Failed to fetch orders");
+        const res = await fetch("http://localhost:5000/api/orders/myorders", {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
         const data = await res.json();
+        if (!res.ok && res.status !== 200) throw new Error(data.message || "Failed to fetch orders");
         setOrders(data);
       } catch (err) {
         console.error(err);
@@ -133,7 +139,8 @@ function ProfilePage() {
                   <th>Order ID</th>
                   <th>Date</th>
                   <th>Total</th>
-                  <th>Status</th>
+                  <th>Paid</th>
+                  <th>Delivered</th>
                 </tr>
               </thead>
               <tbody>
@@ -141,8 +148,9 @@ function ProfilePage() {
                   <tr key={order._id}>
                     <td>{order._id}</td>
                     <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                    <td>{order.total?.toLocaleString()} ETB</td>
-                    <td>{order.status}</td>
+                    <td>{order.totalPrice.toLocaleString()} ETB</td>
+                    <td>{order.isPaid ? "✅" : "❌"}</td>
+                    <td>{order.isDelivered ? "✅" : "❌"}</td>
                   </tr>
                 ))}
               </tbody>
