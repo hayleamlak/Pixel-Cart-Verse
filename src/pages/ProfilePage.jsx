@@ -27,11 +27,16 @@ function ProfilePage() {
       if (!user?.token) return;
       setLoadingOrders(true);
       try {
-        const res = await fetch("http://localhost:5000/api/orders/myorders", {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
+        
+const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/myorders`, {
+  headers: {
+    Authorization: `Bearer ${user.token}`,
+  },
+});
+
+        
+        
+        
         const data = await res.json();
         if (!res.ok && res.status !== 200) throw new Error(data.message || "Failed to fetch orders");
         setOrders(data);

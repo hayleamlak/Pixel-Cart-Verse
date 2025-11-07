@@ -1,0 +1,129 @@
+/* 🌕 White Footer */
+.footer-container {
+  background: #fff;
+  color: #111;
+  padding: 4rem 2rem 2rem;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  margin-top: auto;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 🏢 Headings */
+.footer-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #111;
+}
+
+.footer-section h4 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #ff4d00;
+}
+
+/* ✨ Text */
+.footer-section p {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* 🔗 Links */
+.footer-section.links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section.links ul li {
+  margin: 0.5rem 0;
+}
+
+.footer-section.links ul li a {
+  color: #444;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-section.links ul li a:hover {
+  color: #ff4d00;
+}
+
+/* ✉️ Newsletter */
+.footer-section.newsletter input {
+  padding: 0.8rem 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  width: 220px;
+  font-size: 0.95rem;
+  outline: none;
+  color: #111;
+}
+
+.footer-section.newsletter button {
+  background: #111;
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.4rem;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.footer-section.newsletter button:hover {
+  background: #ff4d00;
+  transform: scale(1.05);
+}
+
+/* 🌐 Social Icons */
+.social-icons a {
+  color: #111;
+  background: #f5f5f5;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  background: #ff4d00;
+  color: #fff;
+  transform: translateY(-4px);
+}
+
+/* ⚡ Footer Bottom */
+.footer-bottom {
+  margin-top: 3rem;
+  border-top: 1px solid #eee;
+  padding-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-section.newsletter form {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-section.newsletter input {
+    width: 80%;
+  }
+}

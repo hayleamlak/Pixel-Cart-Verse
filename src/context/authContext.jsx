@@ -1,9 +1,11 @@
 // src/context/authContext.jsx
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
-
+import {jwtDecode }from "jwt-decode"; // // fixed import
 
 const AuthContext = createContext();
+
+// Get API URL from .env
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
@@ -11,20 +13,17 @@ export const AuthProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  // Persist user to localStorage whenever it changes
+  // Persist user to localStorage
   useEffect(() => {
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
-    } else {
-      localStorage.removeItem("user");
-    }
+    if (user) localStorage.setItem("user", JSON.stringify(user));
+    else localStorage.removeItem("user");
   }, [user]);
 
   // -----------------------------
   // Email/Password Login
   // -----------------------------
   const login = async (email, password) => {
-    const res = await fetch("http://localhost:5000/api/users/login", {
+    const res = await fetch(`${API_URL}/api/users/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -33,7 +32,7 @@ export const AuthProvider = ({ children }) => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Login failed");
 
-    setUser(data); // stores backend JWT token
+    setUser(data);
     return data;
   };
 
@@ -41,7 +40,7 @@ export const AuthProvider = ({ children }) => {
   // Email/Password Register
   // -----------------------------
   const register = async (name, email, password) => {
-    const res = await fetch("http://localhost:5000/api/users/register", {
+    const res = await fetch(`${API_URL}/api/users/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password }),
@@ -50,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Registration failed");
 
-    setUser(data); // stores backend JWT token
+    setUser(data);
     return data;
   };
 
@@ -58,14 +57,13 @@ export const AuthProvider = ({ children }) => {
   // Google Login
   // -----------------------------
   const googleLogin = async (credentialResponse) => {
-    if (!credentialResponse?.credential) {
+    if (!credentialResponse?.credential)
       throw new Error("Google credential not found");
-    }
 
     const decoded = jwtDecode(credentialResponse.credential);
     const { name, email, sub: googleId } = decoded;
 
-    const res = await fetch("http://localhost:5000/api/users/google-login", {
+    const res = await fetch(`${API_URL}/api/users/google-login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, googleId }),
@@ -74,20 +72,19 @@ export const AuthProvider = ({ children }) => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Google login failed");
 
-    setUser(data); // stores backend JWT token
+    setUser(data);
     return data;
   };
 
   // -----------------------------
   // Logout
   // -----------------------------
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user"); // ensure cleanup
-  };
+  const logout = () => setUser(null);
 
   return (
-    <AuthContext.Provider value={{ user, login, register, googleLogin, logout }}>
+    <AuthContext.Provider
+      value={{ user, login, register, googleLogin, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

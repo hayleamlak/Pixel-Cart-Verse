@@ -1,9 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { useCart } from "../context/cartContext";
-import { 
-  FaHome, FaStore, FaShoppingCart, FaUser, FaSignInAlt, 
-  FaUserPlus, FaSignOutAlt, FaBars 
+import {
+  FaHome,
+  FaStore,
+  FaShoppingCart,
+  FaUser,
+  FaSignInAlt,
+  FaUserPlus,
+  FaSignOutAlt,
+  FaBars,
 } from "react-icons/fa";
 import { useState } from "react";
 import "../styles/Navbar.css";
@@ -16,9 +22,10 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Sum total qty in cart
-  const totalCartItems = cartItems?.reduce((acc, item) => acc + (item.qty || 1), 0) || 0;
+  const totalCartItems =
+    cartItems?.reduce((acc, item) => acc + (item.qty || 1), 0) || 0;
 
-  // Close menu after link click (mobile)
+  // Handle link click
   const handleLinkClick = (path) => {
     setMenuOpen(false);
     navigate(path);
@@ -47,20 +54,34 @@ function Navbar() {
 
         {user ? (
           <>
-            <span className="nav-user"><FaUser /> {user.name}</span>
-            <button className="nav-link" onClick={() => handleLinkClick("/profile")}>
-              <FaUser /> Profile
+            <button
+              className="nav-link"
+              onClick={() => handleLinkClick("/profile")}
+            >
+              <FaUser /> {user.name}
             </button>
-            <button className="nav-btn" onClick={() => { logout(); setMenuOpen(false); }}>
+            <button
+              className="nav-btn"
+              onClick={() => {
+                logout();
+                setMenuOpen(false);
+              }}
+            >
               <FaSignOutAlt /> Logout
             </button>
           </>
         ) : (
           <>
-            <button className="nav-btn" onClick={() => handleLinkClick("/register")}>
+            <button
+              className="nav-btn"
+              onClick={() => handleLinkClick("/register")}
+            >
               <FaUserPlus /> Register
             </button>
-            <button className="nav-btn" onClick={() => handleLinkClick("/login")}>
+            <button
+              className="nav-btn"
+              onClick={() => handleLinkClick("/login")}
+            >
               <FaSignInAlt /> Login
             </button>
           </>

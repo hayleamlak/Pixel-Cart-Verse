@@ -58,8 +58,8 @@ const Paymentsuccess = () => {
         <p><strong>Transaction Reference:</strong> {paymentData.tx_ref}</p>
         <p><strong>Amount:</strong> {paymentData.amount} {paymentData.currency}</p>
         <p><strong>Status:</strong> <span style={{ color: "green", fontWeight: "bold" }}>{paymentData.status}</span></p>
+        <p><strong>Payer Name:</strong> {paymentData.first_name} {paymentData.last_name}</p>
         <p><strong>Email:</strong> {paymentData.email}</p>
-        <p><strong>Full Name:</strong> {paymentData.first_name} {paymentData.last_name}</p>
         <p><strong>Date:</strong> {new Date(paymentData.created_at).toLocaleString()}</p>
       </div>
 

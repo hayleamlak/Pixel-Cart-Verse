@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ShopPage from "./pages/ShopPage";
 import ProductPage from "./pages/ProductPage";
@@ -9,15 +9,17 @@ import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
 import Navbar from "./components/Navbar";
-
-// Import payment pages
+import Footer from "./components/Footer";
 import ChapaPayment from "./components/payment/ChapaPayment";
 import TelebirrPayment from "./components/payment/TelebirrPayment";
-import PaymentSuccess from "./pages/paymentsuccess"; // add this import
+import PaymentSuccess from "./pages/paymentsuccess";
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const showFooter = location.pathname === "/"; // ✅ show footer only on home page
+
   return (
-    <Router>
+    <>
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -29,14 +31,19 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/admin" element={<AdminPage />} />
-        
-        {/* Payment routes */}
         <Route path="/payment/chapa/:orderId" element={<ChapaPayment />} />
         <Route path="/payment/telebirr/:orderId" element={<TelebirrPayment />} />
-
-        {/* Chapa redirect success route */}
         <Route path="/paymentsuccess" element={<PaymentSuccess />} />
       </Routes>
+      {showFooter && <Footer />} {/* ✅ Footer only on home */}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

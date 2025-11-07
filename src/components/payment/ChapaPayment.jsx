@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const ChapaPayment = () => {
   const { orderId } = useParams();
   const [error, setError] = useState("");
-  const token = localStorage.getItem("token"); // ✅ load token directly
+  const token = localStorage.getItem("user") 
+    ? JSON.parse(localStorage.getItem("user")).token 
+    : null;
 
   useEffect(() => {
     const initPayment = async () => {
@@ -14,16 +18,13 @@ const ChapaPayment = () => {
           return;
         }
 
-        const response = await fetch(
-          `http://localhost:5000/api/payment/chapa/${orderId}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, // ✅ correct format
-            },
-          }
-        );
+        const response = await fetch(`${API_URL}/api/payment/chapa/${orderId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const data = await response.json();
 

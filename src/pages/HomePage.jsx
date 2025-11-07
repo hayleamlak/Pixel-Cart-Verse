@@ -111,10 +111,10 @@ export default function Home() {
         </form>
       </section>
 
-      {/* Footer */}
-      <footer className="footer" data-aos="fade-up">
-        <p>&copy; 2025 My E-Commerce. All rights reserved.</p>
-      </footer>
+      
+    
+      
+      
     </div>
   );
 }
