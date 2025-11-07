@@ -160,8 +160,7 @@ const CheckoutPage = () => {
           <h3>Payment Method</h3>
           <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
             <option value="Chapa">Chapa</option>
-            <option value="Telebirr">Telebirr</option>
-            <option value="Cash">Cash on Delivery</option>
+          
           </select>
 
           <button type="submit" className="place-order-btn">Place Order</button>
