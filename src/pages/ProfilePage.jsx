@@ -3,7 +3,7 @@ import { useAuth } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaEnvelope, FaLock, FaSignOutAlt, FaEdit, FaSave, FaTimes } from "react-icons/fa";
 
-import "../styles/profilePage.css"; 
+import "../styles/ProfilePage.css"; 
 
 function ProfilePage() {
   const { user, logout, updateProfile } = useAuth();
