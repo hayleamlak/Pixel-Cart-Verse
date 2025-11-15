@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useCart } from "../context/cartContext";
 import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast"; // Toast component
-import "../styles/shoppage.css";
+import "../styles/ShopPage.css";
 
 const ETB_RATE = 55;
 
