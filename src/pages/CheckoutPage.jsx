@@ -10,12 +10,16 @@ const CheckoutPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  // 🔥 YOUR DEPLOYED BACKEND
+  const BASE_URL = "https://haylebest-ecommerce.onrender.com";
+
   const [shipping, setShipping] = useState({
     address: "",
     city: "",
     postalCode: "",
     country: "",
   });
+
   const [paymentMethod, setPaymentMethod] = useState("Chapa");
 
   const handleChange = (e) => {
@@ -33,20 +37,18 @@ const CheckoutPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // normalize cart items to include `product` (mongo id) required by server
       const orderItemsForServer = cartItems.map((item) => ({
         name: item.name,
         qty: item.qty || 1,
         image: item.image || item.img || "",
         price: item.price,
-        product: item._id || item.id || item.product || item.productId, // ensure product id exists
+        product: item._id || item.id || item.product || item.productId,
       }));
 
-      // sanity check: fail early if any product id is missing
       const missing = orderItemsForServer.find((it) => !it.product);
-      if (missing) throw new Error("One or more cart items are missing a product id");
+      if (missing) throw new Error("One or more cart items are missing a product ID");
 
-      const res = await fetch("http://localhost:5000/api/orders", {
+      const res = await fetch(`${BASE_URL}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -63,7 +65,6 @@ const CheckoutPage = () => {
       });
 
       const data = await res.json().catch(async () => {
-        // if response isn't JSON, capture text for better error info
         const txt = await res.text();
         return { error: txt };
       });
@@ -72,14 +73,13 @@ const CheckoutPage = () => {
         throw new Error(data.message || data.error || "Order creation failed");
       }
 
-      // clear cart if available
       if (typeof clearCart === "function") clearCart();
 
-      // initiate payment for online providers
       if (paymentMethod === "Chapa" || paymentMethod === "Telebirr") {
-        const provider = paymentMethod.toLowerCase(); // "chapa" or "telebirr"
+        const provider = paymentMethod.toLowerCase();
+
         const paymentRes = await fetch(
-          `http://localhost:5000/api/payment/${provider}/${data._id}`, // match server: /api/payment/...
+          `${BASE_URL}/api/payment/${provider}/${data._id}`,
           {
             method: "POST",
             headers: {
@@ -91,11 +91,11 @@ const CheckoutPage = () => {
 
         const contentType = paymentRes.headers.get("content-type") || "";
         const paymentData = contentType.includes("application/json")
-          ? await paymentRes.json().catch(() => ({ error: "Invalid JSON from payment endpoint" }))
+          ? await paymentRes.json().catch(() => ({ error: "Invalid JSON" }))
           : { error: await paymentRes.text() };
 
         if (!paymentRes.ok) {
-          throw new Error(paymentData.message || paymentData.error || "Payment initiation failed");
+          throw new Error(paymentData.message || paymentData.error);
         }
 
         if (paymentData.checkoutUrl) {
@@ -104,7 +104,6 @@ const CheckoutPage = () => {
           throw new Error("No checkout URL returned from payment provider");
         }
       } else {
-        // fallback (e.g., Cash on Delivery) - navigate to order page
         navigate(`/order/${data._id}`);
       }
     } catch (err) {
@@ -121,7 +120,8 @@ const CheckoutPage = () => {
     <div className="checkout-container">
       <h2>Checkout</h2>
       <div className="checkout-grid">
-        {/* Left Column: Order Summary */}
+        
+        {/* Left: Summary */}
         <div className="cart-summary">
           <h3>Order Summary</h3>
           {cartItems.length === 0 ? (
@@ -134,7 +134,9 @@ const CheckoutPage = () => {
                     <img src={item.image} alt={item.name} className="summary-img" />
                     <span>{item.name} x {item.qty}</span>
                   </div>
-                  <span className="summary-price">{(item.price * item.qty).toLocaleString()} ETB</span>
+                  <span className="summary-price">
+                    {(item.price * item.qty).toLocaleString()} ETB
+                  </span>
                 </div>
               ))}
               <hr />
@@ -143,13 +145,15 @@ const CheckoutPage = () => {
                 <p><FaShippingFast /> Shipping (5%): {shippingPrice.toLocaleString()} ETB</p>
                 <p><FaPercent /> Tax (15%): {tax.toLocaleString()} ETB</p>
                 <hr />
-                <p className="total"><strong>Grand Total: {grandTotal.toLocaleString()} ETB</strong></p>
+                <p className="total"><strong>
+                  Grand Total: {grandTotal.toLocaleString()} ETB
+                </strong></p>
               </div>
             </>
           )}
         </div>
 
-        {/* Right Column: Shipping & Payment Form */}
+        {/* Right: Form */}
         <form className="checkout-form" onSubmit={handleSubmit}>
           <h3>Shipping Information</h3>
           <input name="address" placeholder="Address" value={shipping.address} onChange={handleChange} required />
@@ -160,7 +164,6 @@ const CheckoutPage = () => {
           <h3>Payment Method</h3>
           <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
             <option value="Chapa">Chapa</option>
-          
           </select>
 
           <button type="submit" className="place-order-btn">Place Order</button>
