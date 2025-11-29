@@ -20,7 +20,7 @@ const Paymentsuccess = () => {
     const verifyPayment = async () => {
       try {
         const response = await fetch(
-          `https://haylebest-ecommerce.onrender.com//api/payment/chapa/verify/${tx_ref}`
+          `https://haylebest-ecommerce.onrender.com/api/payment/chapa/verify/${tx_ref}`
         );
         const data = await response.json();
 
